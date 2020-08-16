@@ -1,7 +1,6 @@
+import { CarCrontrol } from "./carControl";
+
 export interface CarState {
-  movement: {
-    throttle: number;
-    steering: number;
-  };
+  movement: CarCrontrol;
   active: boolean;
 }
