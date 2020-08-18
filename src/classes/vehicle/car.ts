@@ -5,13 +5,13 @@ import { CarState } from "../../interfaces";
 const CAR_L = 60;
 const CAR_W = 27;
 const CAR_RESTITUTION = 0.3;
-const CAR_FRICTION = 0.05;
+const CAR_FRICTION = 0.06;
 const SENSOR_ARC = Math.PI;
 
-const MAX_THROTTLE = 0.01;
-const MAX_STEERING = 0.01;
+const MAX_THROTTLE = 0.009;
+const MAX_STEERING = 0.00003;
 
-const FRONT_SENSORS = 7;
+const FRONT_SENSORS = 5;
 
 export class Car {
   id: string;
@@ -19,12 +19,16 @@ export class Car {
   private carBody: Matter.Body;
 
   public sensors: Sensor[] = [];
-
   private carState: CarState;
+
+  private initPosition: Matter.Vector;
+  private initAngle: number;
 
   constructor(id: string, world: Matter.World, position: Vector, angle: number) {
     this.id = `Car-${id}`;
     this.world = world;
+    this.initAngle = angle;
+    this.initPosition = position;
     this.carState = {
       active: false,
       movement: {
@@ -50,8 +54,15 @@ export class Car {
     World.add(this.world, this.carBody);
 
     this.createSensors();
+    this.reset();
   }
 
+  public reset = () => {
+    Body.setAngularVelocity(this.carBody, 0);
+    Body.setVelocity(this.carBody, { x: 0, y: 0 });
+    Body.setAngle(this.carBody, this.initAngle);
+    Body.setPosition(this.carBody, this.initPosition);
+  };
   public throttle = (percentage: number) => {
     percentage = Math.max(Math.min(percentage, 100), -100);
     this.carState.movement.throttle = (percentage * MAX_THROTTLE) / 100;
@@ -63,11 +74,11 @@ export class Car {
   };
 
   public update = (obstacles: Matter.Body[]) => {
-    this.carBody.torque = this.carState.movement.steering;
     Body.applyForce(this.carBody, this.carBody.position, {
       x: this.carState.movement.throttle * this.carBody.axes[1].x,
       y: this.carState.movement.throttle * this.carBody.axes[1].y,
     });
+    this.carBody.torque = (this.carState.movement.steering * this.carBody.speed) / MAX_THROTTLE;
 
     this.sensors.forEach((sensor) => {
       sensor.update();
