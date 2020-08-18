@@ -34,6 +34,8 @@
     "dotenv": "^8.2.0",
     "jquery": "^3.5.1",
     "matter-js": "^0.14.2",
+    "perlin-noise": "0.0.1",
+    "poly-decomp": "^0.3.0",
     "rx": "^4.1.0",
     "ts-loader": "^8.0.2",
     "webpack": "^4.44.1",
