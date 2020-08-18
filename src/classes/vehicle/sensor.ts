@@ -46,6 +46,11 @@ export class Sensor {
     this.mark = Bodies.rectangle(0, 0, 10, 4, {
       isSensor: true,
       isStatic: true,
+      collisionFilter: {
+        group: -1,
+        category: 2,
+        mask: 0,
+      },
       render: {
         fillStyle: SENSOR_OFF,
       },
@@ -54,14 +59,24 @@ export class Sensor {
     this.lineIndicator = Bodies.rectangle(0, 0, this.fovDistance, 1, {
       isStatic: true,
       isSensor: true,
+      collisionFilter: {
+        group: -1,
+        category: 2,
+        mask: 0,
+      },
       render: {
         fillStyle: INDICATOR_COLOR,
       },
     });
 
-    this.detectionMark = Bodies.circle(0, 0, 5, {
+    this.detectionMark = Bodies.circle(0, 0, 9, {
       isSensor: false,
       isStatic: true,
+      collisionFilter: {
+        group: -1,
+        category: 2,
+        mask: 0,
+      },
       render: {
         visible: false,
         fillStyle: INDICATOR_COLOR,
